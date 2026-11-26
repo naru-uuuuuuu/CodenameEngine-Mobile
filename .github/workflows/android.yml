@@ -46,6 +46,14 @@ jobs:
       - name: Installing/Updating libraries
         run: |
           haxe -cp commandline -D analyzer-optimize --run Main setup -s
+      - name: Install Linux Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libdbus-1-dev \
+            libasound2-dev \
+            libpulse-dev \
+            libudev-dev
       - name: Rebuild Lime Native Libraries
         run: |
           rm -f .haxelib/lime/git/ndll/Linux/lime.ndll
