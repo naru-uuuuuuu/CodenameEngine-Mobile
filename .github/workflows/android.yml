@@ -46,7 +46,14 @@ jobs:
       - name: Installing/Updating libraries
         run: |
           haxe -cp commandline -D analyzer-optimize --run Main setup -s
+      - name: Fix Lime NDLL
+        run: |
+          mkdir -p .haxelib/lime/git/ndll/Linux64
 
+          cp -r .haxelib/lime/git/ndll/Linux/. \
+            .haxelib/lime/git/ndll/Linux64/ 2>/dev/null || true
+
+          find .haxelib/lime/git/ndll -name "lime.ndll"
       - name: Configure Android
         run: |
           haxelib run lime setup -alias -y
