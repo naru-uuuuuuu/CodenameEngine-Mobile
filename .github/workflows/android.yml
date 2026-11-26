@@ -46,32 +46,12 @@ jobs:
       - name: Installing/Updating libraries
         run: |
           haxe -cp commandline -D analyzer-optimize --run Main setup -s
-      - name: Fix Lime NDLL
+      - name: Rebuild Lime Native Libraries
         run: |
-          mkdir -p /tmp/lime-release
+          rm -f .haxelib/lime/git/ndll/Linux/lime.ndll
+          rm -f .haxelib/lime/git/ndll/Linux64/lime.ndll
 
-          curl -fL \
-            "https://lib.haxe.org/files/3.0/lime-8,3,1.zip" \
-            -o /tmp/lime-release/lime.zip
-
-          unzip -q /tmp/lime-release/lime.zip \
-            -d /tmp/lime-release/extracted
-
-          NDLL_DIR=$(find /tmp/lime-release/extracted \
-            -type f \
-            -path "*/ndll/Linux64/lime.ndll" \
-            -print -quit | sed 's#/Linux64/lime.ndll$##')
-
-          if [ -z "$NDLL_DIR" ]; then
-            echo "ERROR: Linux64/lime.ndll not found!"
-            find /tmp/lime-release/extracted -name "*.ndll"
-            exit 1
-          fi
-
-          mkdir -p .haxelib/lime/git/ndll
-          cp -a "$NDLL_DIR/." .haxelib/lime/git/ndll/
-
-          ls -lh .haxelib/lime/git/ndll/Linux64/lime.ndll
+          haxelib run lime rebuild cpp
       - name: Configure Android
         run: |
           haxelib run lime setup -alias -y
